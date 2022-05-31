@@ -12,6 +12,7 @@ namespace CVFilter.Presentation.WebAPI.Ioc
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<ApplicantService>().As<IApplicantService>().SingleInstance();
+            builder.RegisterType<CVService>().As<ICVService>().SingleInstance();
             builder.RegisterType<CreateApplicantCommandRequestDtoValidation>().As<IValidator<CreateApplicantCommandRequestDto>>().InstancePerDependency();
             builder.RegisterType<CVWorkerRequestDtoValidation>().As<IValidator<CVWorkerRequestDto>>().InstancePerDependency();
             builder.RegisterType<DeleteApplicantCommandRequestDtoValidation>().As<IValidator<DeleteApplicantCommandRequestDto>>().InstancePerDependency();

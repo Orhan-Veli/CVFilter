@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CVFilter.Infrastructure.Command.Request;
 using Mapster;
+using System.IO;
 
 namespace CVFilter.Application.Concrete
 {
@@ -28,25 +29,48 @@ namespace CVFilter.Application.Concrete
             {
                 return new ServiceResponse<List<int>>(400, false, "CV Model is not valid"); 
             }
-
+            var applicantDtos = new List<CreateApplicantCommandRequestDto>();
             var getMatches = cVWorkerRequestDto.Matches.Split(',');
-            var getPageTexts = PdfReader.GetTextFromThePage(cVWorkerRequestDto.Path);
-            var matcheds = GetMatchesCount(getMatches, getPageTexts);
-            var name = String.Join(" ", getPageTexts[0].Split(" ").ToList().GetRange(2, getPageTexts[0].Split(" ").ToList().IndexOf("@")).ToArray());
-            var createApplicant = new CreateApplicantCommandRequestDto
+            var getPdfFiles = Directory.GetFiles(cVWorkerRequestDto.Path, "*.pdf").ToList();
+            foreach (var pdfFile in getPdfFiles)
             {
-                Name = name,
-                Matches =String.Join(",", matcheds),
-                Path = cVWorkerRequestDto.Path
-            };
-            var result = await _mediatr.Send(createApplicant.Adapt<CreateApplicantCommandRequest>());
-            if(result.Id == -1)
-            {
-                return new ServiceResponse<List<int>>(500, false, "Applicant cannot be created");
+                var getPageTexts = PdfReader.GetTextFromThePage(pdfFile);
+                var matcheds = GetMatchesCount(getMatches, getPageTexts);
+                if (matcheds.Any())
+                {
+                    var name = GetNameFromPage(getPageTexts);
+                    var createApplicant = new CreateApplicantCommandRequestDto
+                    {
+                        User = name,
+                        Matches = String.Join(",", matcheds),
+                        Path = cVWorkerRequestDto.Path
+                    };
+                    applicantDtos.Add(createApplicant);
+                }
             }
+            
+           
+            //var result = await _mediatr.Send(createApplicant.Adapt<CreateApplicantCommandRequest>());
+            //if(result.Id == -1)
+            //{
+            //    return new ServiceResponse<List<int>>(500, false, "Applicant cannot be created");
+            //}
 
-           return new ServiceResponse<List<int>>(201, true, new List<int> { result.Id });
+           //return new ServiceResponse<List<int>>(201, true, new List<int> { result.Id });
+           return new ServiceResponse<List<int>>(201, true, new List<int> { -1 });
         }
+
+        private string GetNameFromPage(List<string> texts)
+        {
+            var name = string.Empty;
+            foreach (var text in texts[0].Split(' ').Skip(2))
+            {
+                if (text.Contains("@")) break;
+                name += text;
+            }
+            return name;
+        }
+
         private List<string> GetMatchesCount(string[] matches, List<string> textPage)
         {
             var matcheds = new List<string>();

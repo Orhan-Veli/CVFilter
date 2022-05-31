@@ -25,7 +25,7 @@ namespace CVFilter.Application.Concrete
         }
         public async Task<IServiceResponse<CreateApplicantCommandResponse>> CreateAsync(CreateApplicantCommandRequestDto createApplicantCommandRequestDto)
         {
-            if (createApplicantCommandRequestDto == null || string.IsNullOrEmpty(createApplicantCommandRequestDto.Path) || string.IsNullOrEmpty(createApplicantCommandRequestDto.Matches) || string.IsNullOrEmpty(createApplicantCommandRequestDto.Name))
+            if (createApplicantCommandRequestDto == null || string.IsNullOrEmpty(createApplicantCommandRequestDto.Path) || string.IsNullOrEmpty(createApplicantCommandRequestDto.Matches))
             {
                 return new ServiceResponse<CreateApplicantCommandResponse>(400,false,"Create Applicant model is not valid");
             }

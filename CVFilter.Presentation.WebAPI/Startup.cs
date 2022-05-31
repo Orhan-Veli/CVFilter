@@ -23,6 +23,7 @@ namespace CVFilter.Presentation.WebAPI
             Configuration = configuration;
         }
 
+        private readonly string AllowVueRequests = "_allowVueRequests";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -33,6 +34,14 @@ namespace CVFilter.Presentation.WebAPI
            .AddDbContext<CVFilterDbContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllowVueRequests,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:8081").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed((host) => true);
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,12 +51,9 @@ namespace CVFilter.Presentation.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCors(AllowVueRequests);
 
             app.UseEndpoints(endpoints =>
             {

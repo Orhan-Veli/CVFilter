@@ -6,7 +6,6 @@ namespace CVFilter.Application.Dto
 {
     public class CreateApplicantCommandRequestDto
     {
-        public string Name { get; set; }
         public string Matches { get; set; }
         public string Path { get; set; }
         public string User { get; set; }

@@ -15,7 +15,7 @@ namespace CVFilter.Infrastructure.PdfHelper
                 using (UglyToad.PdfPig.PdfDocument document = UglyToad.PdfPig.PdfDocument.Open(stream))
                 {
                     var getPageCount = document.NumberOfPages;
-                    for (int i = 1; i < getPageCount; i++)
+                    for (int i = 1; i <= getPageCount; i++)
                     {
                         var page = document.GetPage(i); 
                         pageTextArray.Add(string.Join(" ", page.GetWords()));
