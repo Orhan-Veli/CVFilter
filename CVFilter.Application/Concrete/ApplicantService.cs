@@ -30,10 +30,10 @@ namespace CVFilter.Application.Concrete
                 return new ServiceResponse<CreateApplicantCommandResponse>(400,false,"Create Applicant model is not valid");
             }
 
-            var createApplicant = _mediatr.Send(createApplicantCommandRequestDto.Adapt<CreateApplicantCommandRequest>());
+            var createApplicant = await _mediatr.Send(createApplicantCommandRequestDto.Adapt<CreateApplicantCommandRequest>());
             if (createApplicant.Id == -1)
             {
-                return new ServiceResponse<CreateApplicantCommandResponse>(500, false, createApplicant.Result.ErrorMessage);
+                return new ServiceResponse<CreateApplicantCommandResponse>(500, false, createApplicant.ErrorMessage);
             }
 
             return new ServiceResponse<CreateApplicantCommandResponse>(201, true, new CreateApplicantCommandResponse { Id = createApplicant.Id });

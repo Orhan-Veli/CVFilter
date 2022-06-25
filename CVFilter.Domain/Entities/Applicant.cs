@@ -8,16 +8,16 @@ namespace CVFilter.Domain.Entities
 {
     public class Applicant : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required(ErrorMessage = "Name is Required")]
-        public string Name { get; set; }
         [Required(ErrorMessage = "Matches is Required")]
         public string Matches { get; set; }
         [Required(ErrorMessage = "Path is Required")]
         public string Path { get; set; }
-        [Required(ErrorMessage = "User is Required")]
-        public string User { get; set; }
+        [Required(ErrorMessage = "Name is Required")]
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public int TotalExperience { get; set; }
+        public ICollection<ApplicantEducationRelation> ApplicantEducationRelations { get; set; }
+        public ICollection<ApplicantLanguageRelation> ApplicantLanguagesRelations { get; set; }
     }
 }

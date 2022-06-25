@@ -13,9 +13,12 @@ namespace CVFilter.Infrastructure.Command.Request
             UpdatedDate = DateTime.Now;
         }
         public int Id { get; set; }
-        public string Name { get; set; }
         public string Matches { get; set; }
         public string Path { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public int TotalExperience { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsActive { get; set; }
         public DateTime UpdatedDate { get; set; }

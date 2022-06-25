@@ -9,6 +9,6 @@ namespace CVFilter.Application.Abstract
 {
     public interface ICVService
     {
-        Task<IServiceResponse<List<int>>> CVWorkerAsync(CVWorkerRequestDto cVWorkerRequestDto);
+        Task<IServiceResponse<string>> CVWorkerAsync(CVWorkerRequestDto cVWorkerRequestDto);
     }
 }

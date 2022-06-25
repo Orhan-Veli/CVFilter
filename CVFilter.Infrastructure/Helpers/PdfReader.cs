@@ -7,7 +7,7 @@ namespace CVFilter.Infrastructure.PdfHelper
 {
     public static class PdfReader
     {
-        public static List<string> GetTextFromThePage(this string path)
+        public static string GetTextFromThePage(this string path)
         {
             var pageTextArray = new List<string>();
             using (var stream = File.OpenRead(path))
@@ -20,7 +20,7 @@ namespace CVFilter.Infrastructure.PdfHelper
                         var page = document.GetPage(i); 
                         pageTextArray.Add(string.Join(" ", page.GetWords()));
                     }
-                    return pageTextArray;
+                    return String.Concat(pageTextArray);
                 }
             }            
         }

@@ -9,6 +9,9 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Domain.Core.SqlQueries;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
@@ -25,20 +28,21 @@ namespace CVFilter.Infrastructure.Handler.Command
             {
                 try
                 {
-                    var createApplicantQuery = @"INSERT INTO Applicants ([Name],Matches,Path,IsActive,IsDeleted,CreatedDate,UpdatedDate,[User]) VALUES (@Name,@Matches,@Path,@IsActive,@IsDeleted,@CreatedDate,@UpdatedDate,@User)";
-
-                    var createResult = await connection.ExecuteAsync(createApplicantQuery, new
+                   
+                    var createResult = await connection.QuerySingleAsync<int>(Queries.CreateApplicationCommandQuery, new
                     {
                         request.Name,
                         request.Matches,
                         request.Path,
+                        request.PhoneNumber,
+                        request.Email,
+                        request.TotalExperience,
                         request.IsActive,
                         request.IsDeleted,
                         request.CreatedDate,
                         request.UpdatedDate,
-                        request.User
                     });
-                    return new CreateApplicantCommandResponse { Id = createResult };
+                    return new CreateApplicantCommandResponse { Id = createResult};
                 }
                 catch(Exception ex)
                 {

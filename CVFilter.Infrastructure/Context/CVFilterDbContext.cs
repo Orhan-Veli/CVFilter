@@ -14,6 +14,9 @@ namespace CVFilter.Infrastructure.Context
         }
 
         public DbSet<Applicant> Applicants { get; set; }
+        public DbSet<ApplicantEducationRelation> ApplicantEducationRelations { get; set; }
+        public DbSet<ApplicantLanguageRelation> ApplicantLanguageRelations { get; set; }
+        public DbSet<Log> Logs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

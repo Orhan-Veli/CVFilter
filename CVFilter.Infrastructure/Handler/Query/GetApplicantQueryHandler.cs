@@ -25,7 +25,10 @@ namespace CVFilter.Infrastructure.Handler.Query
         {
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
-                var getApplicant = @"SELECT * FROM Applicants WHERE ID = @Id";
+                var getApplicant = @"SELECT * FROM Applicants AS A
+                                        JOIN ApplicantLanguageRelations AS ALR ON ALR.ApplicantId = A.Id
+                                        JOIN ApplicantEducationRelations AS AER ON AER.ApplicantId = A.Id
+                                        WHERE IsActive = 1 AND IsDeleted = 0 AND A.Id=@Id";
                 var result = await connection.QueryAsync<GetApplicantQueryResponse>(getApplicant, new { request.Id });
                 return result.FirstOrDefault();
             }

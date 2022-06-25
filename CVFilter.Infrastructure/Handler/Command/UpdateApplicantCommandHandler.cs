@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Domain.Core.SqlQueries;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
@@ -25,12 +26,14 @@ namespace CVFilter.Infrastructure.Handler.Command
             {
                 try
                 {
-                    var updateApplicant = @"UPDATE Applicants SET [Name] = @Name, Matches = @Matches, Path = @Path, IsActive = @IsActive, IsDeleted = @IsDeleted, UpdatedDate = @UpdatedDate WHERE Id = @Id";
-                    var updateResult = await connection.ExecuteAsync(updateApplicant, new
+                    var updateResult = await connection.ExecuteAsync(Queries.UpdateApplicantQuery, new
                     {
                         request.Name,
                         request.Matches,
                         request.Path,
+                        request.Email,
+                        request.PhoneNumber,
+                        request.TotalExperience,
                         request.IsActive,
                         request.IsDeleted,
                         request.UpdatedDate,
@@ -38,9 +41,9 @@ namespace CVFilter.Infrastructure.Handler.Command
                     });
                     return new UpdateApplicantCommandResponse { Id = updateResult };
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    return new UpdateApplicantCommandResponse { Id = -1, ErrorMessage=ex.Message };
+                    return new UpdateApplicantCommandResponse { Id = -1, ErrorMessage = ex.Message };
                 }
             }
         }

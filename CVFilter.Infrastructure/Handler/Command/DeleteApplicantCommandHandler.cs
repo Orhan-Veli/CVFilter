@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Domain.Core.SqlQueries;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
@@ -26,8 +27,7 @@ namespace CVFilter.Infrastructure.Handler.Command
             {
                 try
                 {
-                    var deleteApplicantQuery = "DELETE FROM Applicants WHERE ID = @Id";
-                    var deleteResult = await connection.ExecuteAsync(deleteApplicantQuery, new { request.Id });
+                    var deleteResult = await connection.ExecuteAsync(Queries.DeleteApplicantQuery, new { request.Id });
                     return new DeleteApplicantCommandResponse { Success = true };
                 }
                 catch(Exception ex)

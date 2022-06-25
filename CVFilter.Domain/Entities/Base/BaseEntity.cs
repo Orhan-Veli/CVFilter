@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace CVFilter.Domain.Entities.Base
@@ -8,11 +9,13 @@ namespace CVFilter.Domain.Entities.Base
     {
         public BaseEntity()
         {
-            IsActive = false;
+            IsActive = true;
             IsDeleted = false;
             CreatedDate = DateTime.Now;
             UpdatedDate = DateTime.Now;
         }
+        [Key]
+        public int Id { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreatedDate { get; set; }

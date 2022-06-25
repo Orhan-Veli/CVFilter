@@ -7,7 +7,10 @@ namespace CVFilter.Presentation.WebAPI.Validation
     {
         public CVWorkerRequestDtoValidation()
         {
-            RuleFor(x => x.Matches).NotNull().NotEmpty().MaximumLength(50).Must(c => c.Contains(','));
+            RuleFor(x => x.LanguageMatches).NotNull().NotEmpty().MaximumLength(50);
+            RuleFor(x => x.EducationMatches).NotNull().NotEmpty().MaximumLength(50);
+            RuleFor(x => x.RequiredMatches).NotNull().NotEmpty().MaximumLength(50);
+            RuleFor(x => x.Experience).NotNull().NotEmpty();
             RuleFor(x => x.Path).NotNull().NotEmpty().MinimumLength(250);
         }
     }

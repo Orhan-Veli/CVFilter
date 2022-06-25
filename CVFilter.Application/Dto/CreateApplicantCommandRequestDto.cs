@@ -8,6 +8,5 @@ namespace CVFilter.Application.Dto
     {
         public string Matches { get; set; }
         public string Path { get; set; }
-        public string User { get; set; }
     }
 }
