@@ -1,14 +1,9 @@
 <template>
-<Home></Home>
+<router-view />
 </template>
 <script>
-import Home from './views/Home.vue'
-
 export default {
   name: 'App',
-  components: {
-    Home
-  }
 }
 </script>
 
@@ -19,6 +14,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-color: #f4a261;
 }
 </style>

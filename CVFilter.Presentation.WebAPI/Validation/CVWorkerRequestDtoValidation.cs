@@ -10,7 +10,7 @@ namespace CVFilter.Presentation.WebAPI.Validation
             RuleFor(x => x.LanguageMatches).NotNull().NotEmpty().MaximumLength(50);
             RuleFor(x => x.EducationMatches).NotNull().NotEmpty().MaximumLength(50);
             RuleFor(x => x.RequiredMatches).NotNull().NotEmpty().MaximumLength(50);
-            RuleFor(x => x.Experience).NotNull().NotEmpty();
+            RuleFor(x => x.Experience).Must(x => x > 0);
             RuleFor(x => x.Path).NotNull().NotEmpty().MinimumLength(250);
         }
     }

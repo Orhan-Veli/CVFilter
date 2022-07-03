@@ -39,7 +39,11 @@ namespace CVFilter.Presentation.WebAPI
                 options.AddPolicy(name: AllowVueRequests,
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:8081").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed((host) => true);
+                        builder.WithOrigins("http://localhost:8081/", "http://192.168.1.26:8081/")
+                            .AllowAnyMethod()
+                            .AllowCredentials()
+                            .AllowAnyHeader()
+                            .SetIsOriginAllowed((host) => true);
                     });
             });
         }
@@ -51,6 +55,7 @@ namespace CVFilter.Presentation.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseCors(AllowVueRequests);
