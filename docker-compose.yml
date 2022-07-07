@@ -1,0 +1,29 @@
+version: "3.5"
+services:
+  cvfilter.presentation.webapi:
+   restart: always
+   build:
+    context: .
+    dockerfile: webapi.Dockerfile
+   ports: 
+    - "7000:7000"  
+   depends_on: 
+    - mssql
+
+  codechat-web:
+   container_name: vue
+   build: 
+    context: .
+    dockerfile: Dockerfile
+   environment:
+    - CHOKIDAR_USEPOLLING=true
+   ports:
+    - "8081:8080"
+
+  mssql:
+   image: mcr.microsoft.com/mssql/server:2019-latest
+   environment:
+    SA_PASSWORD: "1576Orhan_"
+    ACCEPT_EULA: "Y"
+   ports:
+    - "1433:1433"
