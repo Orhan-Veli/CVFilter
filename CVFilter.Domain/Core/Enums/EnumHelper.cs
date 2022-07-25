@@ -4,9 +4,9 @@ using System.Text;
 
 namespace CVFilter.Domain.Core.Enums
 {
-    public class EnumHelper
+    public static class EnumHelper
     {
-        public enum FilterEnum
+        public static enum FilterEnum
         {
             Education, Langugage, Required
         }

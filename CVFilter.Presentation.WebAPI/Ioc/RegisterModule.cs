@@ -12,6 +12,11 @@ namespace CVFilter.Presentation.WebAPI.Ioc
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<ApplicantService>().As<IApplicantService>().SingleInstance();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().SingleInstance();
+            builder.RegisterType<EntityRepository<Applicant>>().As<IEntityRepository<Applicant>>().SingleInstance();
+            builder.RegisterType<EntityRepository<ApplicantEducationRelation>>().As<IEntityRepository<ApplicantEducationRelation>>().SingleInstance();
+            builder.RegisterType<EntityRepository<ApplicantLanguageRelation>>().As<IEntityRepository<ApplicantLanguageRelation>>().SingleInstance();
+            builder.RegisterType<EntityRepository<Log>>().As<IEntityRepository<Log>>().SingleInstance();
             builder.RegisterType<CVService>().As<ICVService>().SingleInstance();
             builder.RegisterType<CreateApplicantCommandRequestDtoValidation>().As<IValidator<CreateApplicantCommandRequestDto>>().InstancePerDependency();
             builder.RegisterType<CVWorkerRequestDtoValidation>().As<IValidator<CVWorkerRequestDto>>().InstancePerDependency();
@@ -19,6 +24,7 @@ namespace CVFilter.Presentation.WebAPI.Ioc
             builder.RegisterType<GetAllApplicantQueryRequestDtoValidation>().As<IValidator<GetAllApplicantQueryRequestDto>>().InstancePerDependency();
             builder.RegisterType<GetApplicantQueryRequestDtoValidation>().As<IValidator<GetApplicantQueryRequestDto>>().InstancePerDependency();
             builder.RegisterType<UpdateApplicantCommandRequestDtoValidation>().As<IValidator<UpdateApplicantCommandRequestDto>>().InstancePerDependency();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().SingleInstance();
             //base.Load(builder);
         }
     }

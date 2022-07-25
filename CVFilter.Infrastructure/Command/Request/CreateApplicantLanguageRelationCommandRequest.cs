@@ -10,6 +10,6 @@ namespace CVFilter.Infrastructure.Command.Request
     public class CreateApplicantLanguageRelationCommandRequest : ICommandRequest<CreateApplicantLanguageRelationCommandResponse>
     {
         public int ApplicantId { get; set; }
-        public string Langugage { get; set; }
+        public string Language { get; set; }
     }
 }

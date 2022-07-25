@@ -10,34 +10,38 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CVFilter.Domain.Core.SqlQueries;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
     public class CreateApplicantLanguageRelationCommandHandler : ICommandRequestHandler<CreateApplicantLanguageRelationCommandRequest, CreateApplicantLanguageRelationCommandResponse>
     {
         private readonly IConfiguration _configuration;
-        public CreateApplicantLanguageRelationCommandHandler(IConfiguration configuration)
+        private readonly IEntityRepository<ApplicantLanguageRelation> _applicantRepo;
+        public CreateApplicantLanguageRelationCommandHandler(IConfiguration configuration,IEntityRepository<ApplicantLanguageRelation> applicantRepo)
         {
             _configuration = configuration;
+            _applicantRepo = applicantRepo;
         }
         public async Task<CreateApplicantLanguageRelationCommandResponse> Handle(CreateApplicantLanguageRelationCommandRequest request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
                 try
                 {
-                    var createResult = await connection.QuerySingleAsync<int>(Queries.CreateApplicantLanguageRelationQuery, new
+                    var createResult = new ApplicantLanguageRelation
                     {
-                        request.ApplicantId,
-                        request.Langugage,
-                    });
-                    return new CreateApplicantLanguageRelationCommandResponse { Id = createResult };
+                        ApplicantId =request.ApplicantId,
+                        Language = request.Language,
+                    };
+                    await _applicantRepo.Create(createResult);
+                    return new CreateApplicantLanguageRelationCommandResponse();
                 }
                 catch (Exception ex)
                 {
                     return new CreateApplicantLanguageRelationCommandResponse { Id = -1, ErrorMessage = ex.Message };
                 }
-            }
+            
         }
     }
 }

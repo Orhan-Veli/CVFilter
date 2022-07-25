@@ -10,31 +10,36 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CVFilter.Domain.Core.SqlQueries;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
     public class DeleteApplicantCommandHandler : ICommandRequestHandler<DeleteApplicantCommandRequest, DeleteApplicantCommandResponse>
     {
         private readonly IConfiguration _configuration;
-        public DeleteApplicantCommandHandler(IConfiguration configuration)
+        private readonly IEntityRepository<Applicant> _applicantRepo;
+        public DeleteApplicantCommandHandler(IConfiguration configuration,
+        IEntityRepository<Applicant> applicantRepo)
         {
             _configuration = configuration;
+            _applicantRepo = applicantRepo;
         }
 
         public async Task<DeleteApplicantCommandResponse> Handle(DeleteApplicantCommandRequest request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
                 try
                 {
-                    var deleteResult = await connection.ExecuteAsync(Queries.DeleteApplicantQuery, new { request.Id });
+                    var app = await _applicantRepo.Get(x=> x.Id == request.Id);
+                    await _applicantRepo.Delete(app);
                     return new DeleteApplicantCommandResponse { Success = true };
                 }
                 catch(Exception ex)
                 {
                     return new DeleteApplicantCommandResponse { Success = false, ErrorMessage=ex.Message };
                 }
-            }
+            
         }
     }
 }

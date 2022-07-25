@@ -10,38 +10,44 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
     public class BulkCreateApplicantCommandHandler : ICommandRequestHandler<BulkCreateApplicantCommandRequest, BulkCreateApplicantCommandResponse>
     {
         private readonly IConfiguration _configuration;
-        public BulkCreateApplicantCommandHandler(IConfiguration configuration)
+        private readonly IEntityRepository<Applicant> _applicantRepo;
+        public BulkCreateApplicantCommandHandler(IConfiguration configuration,IEntityRepository<Applicant> applicantRepo)
         {
             _configuration = configuration;
+            _applicantRepo = applicantRepo;
         }
         public async Task<BulkCreateApplicantCommandResponse> Handle(BulkCreateApplicantCommandRequest request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
                 try
                 {
-                    string insertSql = string.Empty;
                     foreach (var item in request.CreateApplicants)
                     {
-                        var isActive = item.IsActive == true ? 1 : 0;
-                        var isDeleted= item.IsDeleted == true ? 1 : 0;
-                        var createApplicantQuery = @"INSERT INTO Applicants ([Name],Matches,Path,PhoneNumber,Email,IsActive,IsDeleted,CreatedDate,UpdatedDate) VALUES ('" + item.Name + "','" + item.Matches + "','" + item.Path + "','" + item.PhoneNumber + "','" + item.Email + "'," + isActive + ","+ isDeleted + ",'"+item.CreatedDate+"','"+item.UpdatedDate+ "') ";
-                        insertSql += createApplicantQuery;
+                        var applicant = new Applicant
+                        {
+                            Matches = item.Matches,
+                            Path = item.Path,
+                            Name = item.Name,
+                            Email = item.Email,
+                            PhoneNumber = item.PhoneNumber,
+                            TotalExperience = item.TotalExperience 
+                        };
+                        await _applicantRepo.Create(applicant);
                     }
-                    var createResult = await connection.ExecuteAsync(insertSql);
                     return new BulkCreateApplicantCommandResponse();
                 }
                 catch (Exception ex)
                 {
                     return new BulkCreateApplicantCommandResponse { ErrorMessage = ex.Message };
                 }
-            }
         }
     }
 }

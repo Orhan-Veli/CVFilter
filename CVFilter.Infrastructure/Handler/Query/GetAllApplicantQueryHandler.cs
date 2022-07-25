@@ -1,4 +1,5 @@
-﻿using CVFilter.Domain.Core.Interfaces;
+﻿using System.Security.Cryptography.X509Certificates;
+using CVFilter.Domain.Core.Interfaces;
 using CVFilter.Infrastructure.Query.Request;
 using CVFilter.Infrastructure.Query.Response;
 using Dapper;
@@ -10,27 +11,38 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Infrastructure.Handler.Query
 {
     public class GetAllApplicantQueryHandler : IQueryRequestHandler<GetAllApplicantQueryRequest, GetAllApplicantQueryResponse>
     {
         private readonly IConfiguration _configuration;
-        public GetAllApplicantQueryHandler(IConfiguration configuration)
+        private readonly IEntityRepository<Applicant> _applicantRepo;
+        public GetAllApplicantQueryHandler(IConfiguration configuration,
+        IEntityRepository<Applicant> applicantRepo)
         {
             _configuration = configuration;
+            _applicantRepo = applicantRepo;
         }
         public async Task<GetAllApplicantQueryResponse> Handle(GetAllApplicantQueryRequest request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            var getAllApplicant = await _applicantRepo.GetAll(x=> x.IsActive && !x.IsDeleted);
+            var getAllApplicantDto = new GetAllApplicantQueryResponse();
+            foreach (var item in getAllApplicant)
             {
-                var getAllApplicant = @"SELECT * FROM Applicants AS A
-                                        JOIN ApplicantLanguageRelations AS ALR ON ALR.ApplicantId = A.Id
-                                        JOIN ApplicantEducationRelations AS AER ON AER.ApplicantId = A.Id
-                                        WHERE IsActive = 1 AND IsDeleted = 0";
-                var result = await connection.QueryAsync<GetApplicantQueryResponse>(getAllApplicant, new { request.User});
-                return new GetAllApplicantQueryResponse { GetApplicantQueryResponses = result.ToList() };
+                var applicant = new GetApplicantQueryResponse
+                {
+                    Id = item.Id,
+                    Matches = item.Matches,
+                    Path = item.Path,
+                    User = item.Name
+                };
+                getAllApplicantDto.GetApplicantQueryResponses.Add(applicant);
             }
+            return getAllApplicantDto;
         }
     }
 }

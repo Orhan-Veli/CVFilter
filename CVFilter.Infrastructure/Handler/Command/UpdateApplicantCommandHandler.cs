@@ -10,42 +10,46 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CVFilter.Domain.Core.SqlQueries;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
     public class UpdateApplicantCommandHandler : ICommandRequestHandler<UpdateApplicantCommandRequest, UpdateApplicantCommandResponse>
     {
         private readonly IConfiguration _configuration;
-        public UpdateApplicantCommandHandler(IConfiguration configuration)
+        private readonly IEntityRepository<Applicant> _applicantRepo;
+        public UpdateApplicantCommandHandler(IConfiguration configuration,IEntityRepository<Applicant> applicantRepo)
         {
             _configuration = configuration;
+            _applicantRepo = applicantRepo;
         }
         public async Task<UpdateApplicantCommandResponse> Handle(UpdateApplicantCommandRequest request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
                 try
                 {
-                    var updateResult = await connection.ExecuteAsync(Queries.UpdateApplicantQuery, new
+                    var updateResult = new Applicant
                     {
-                        request.Name,
-                        request.Matches,
-                        request.Path,
-                        request.Email,
-                        request.PhoneNumber,
-                        request.TotalExperience,
-                        request.IsActive,
-                        request.IsDeleted,
-                        request.UpdatedDate,
-                        request.Id
-                    });
-                    return new UpdateApplicantCommandResponse { Id = updateResult };
+                        Name = request.Name,
+                        Matches = request.Matches,
+                        Path = request.Path,
+                        Email = request.Email,
+                        PhoneNumber = request.PhoneNumber,
+                        TotalExperience = request.TotalExperience,
+                        IsActive = request.IsActive,
+                        IsDeleted = request.IsDeleted,
+                        UpdatedDate = request.UpdatedDate,
+                        Id = request.Id
+                    };
+                    await _applicantRepo.Update(updateResult);
+                    return new UpdateApplicantCommandResponse { Id = updateResult.Id };
                 }
                 catch (Exception ex)
                 {
                     return new UpdateApplicantCommandResponse { Id = -1, ErrorMessage = ex.Message };
                 }
-            }
+            
         }
     }
 }

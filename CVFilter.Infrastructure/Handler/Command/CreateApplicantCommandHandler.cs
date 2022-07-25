@@ -12,43 +12,43 @@ using System.Threading.Tasks;
 using CVFilter.Domain.Core.SqlQueries;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
     public class CreateApplicantCommandHandler : ICommandRequestHandler<CreateApplicantCommandRequest, CreateApplicantCommandResponse>
     {
         private readonly IConfiguration _configuration;
-        public CreateApplicantCommandHandler(IConfiguration configuration)
+        private readonly IEntityRepository<Applicant> _applicantRepo;
+        public CreateApplicantCommandHandler(IConfiguration configuration,
+        IEntityRepository<Applicant> applicantRepo)
         {
             _configuration = configuration;
+            _applicantRepo = applicantRepo;
         }
         public async Task<CreateApplicantCommandResponse> Handle(CreateApplicantCommandRequest request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
                 try
                 {
-                   
-                    var createResult = await connection.QuerySingleAsync<int>(Queries.CreateApplicationCommandQuery, new
+                    var applicant = new Applicant
                     {
-                        request.Name,
-                        request.Matches,
-                        request.Path,
-                        request.PhoneNumber,
-                        request.Email,
-                        request.TotalExperience,
-                        request.IsActive,
-                        request.IsDeleted,
-                        request.CreatedDate,
-                        request.UpdatedDate,
-                    });
-                    return new CreateApplicantCommandResponse { Id = createResult};
+                        Matches = request.Matches,
+                        Path = request.Path,
+                        Name = request.Name,
+                        Email = request.Email,
+                        PhoneNumber = request.PhoneNumber,
+                        TotalExperience = request.TotalExperience 
+                    };
+                    await _applicantRepo.Create(applicant);
+                    return new CreateApplicantCommandResponse();
                 }
                 catch(Exception ex)
                 {
                     return new CreateApplicantCommandResponse { Id = -1, ErrorMessage = ex.Message };
                 }
-            }
+            
         }
     }
 }

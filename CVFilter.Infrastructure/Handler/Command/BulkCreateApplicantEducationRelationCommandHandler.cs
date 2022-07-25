@@ -9,36 +9,41 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
     public class BulkCreateApplicantEducationRelationCommandHandler : ICommandRequestHandler<BulkCreateApplicantEducationRelationCommandRequest, BulkCreateApplicantEducationRelationCommandResponse>
     {
         private readonly IConfiguration _configuration;
-        public BulkCreateApplicantEducationRelationCommandHandler(IConfiguration configuration)
+        private readonly IEntityRepository<ApplicantEducationRelation> _applicantRepo;
+        public BulkCreateApplicantEducationRelationCommandHandler(IConfiguration configuration,IEntityRepository<ApplicantEducationRelation> applicantRepo)
         {
             _configuration = configuration;
+            _applicantRepo = applicantRepo;
         }
         public async Task<BulkCreateApplicantEducationRelationCommandResponse> Handle(BulkCreateApplicantEducationRelationCommandRequest request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
                 try
                 {
-                    string insertSql = string.Empty;
                     foreach (var item in request.CreateApplicantEducationRelations)
                     {
-                        var createApplicantQuery = @"INSERT INTO ApplicantEducationRelations (ApplicantId,SchoolName) VALUES ('" + item.ApplicantId + "','" + item.SchoolName + "') ";
-                        insertSql += createApplicantQuery;
+                        var applicantEd = new ApplicantEducationRelation
+                        {
+                            ApplicantId = item.ApplicantId, 
+                            SchoolName = item.SchoolName
+                        };
+                        await _applicantRepo.Create(applicantEd);
                     }
-                    var createResult = await connection.ExecuteAsync(insertSql);
                     return new BulkCreateApplicantEducationRelationCommandResponse();
                 }
                 catch (Exception ex)
                 {
                     return new BulkCreateApplicantEducationRelationCommandResponse { ErrorMessage = ex.Message };
                 }
-            }
+            
         }
     }
 }

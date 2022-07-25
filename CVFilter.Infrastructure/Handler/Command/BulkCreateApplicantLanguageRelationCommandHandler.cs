@@ -1,4 +1,5 @@
-﻿using CVFilter.Domain.Core.Interfaces;
+﻿using System.Net.Mime;
+using CVFilter.Domain.Core.Interfaces;
 using CVFilter.Infrastructure.Command.Request;
 using CVFilter.Infrastructure.Command.Response;
 using Dapper;
@@ -9,36 +10,42 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Infrastructure.Handler.Command
 {
     public class BulkCreateApplicantLanguageRelationCommandHandler : ICommandRequestHandler<BulkCreateApplicantLanguageRelationCommandRequest, BulkCreateApplicantLanguageRelationCommandResponse>
     {
         private readonly IConfiguration _configuration;
-        public BulkCreateApplicantLanguageRelationCommandHandler(IConfiguration configuration)
+        private readonly IEntityRepository<ApplicantLanguageRelation> _applicantRepo;
+        public BulkCreateApplicantLanguageRelationCommandHandler(IConfiguration configuration,
+        IEntityRepository<ApplicantLanguageRelation> applicantRepo)
         {
             _configuration = configuration;
+            _applicantRepo = applicantRepo;
         }
         public async Task<BulkCreateApplicantLanguageRelationCommandResponse> Handle(BulkCreateApplicantLanguageRelationCommandRequest request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
-            {
                 try
                 {
-                    string insertSql = string.Empty;
                     foreach (var item in request.CreateApplicantLanguageRelations)
                     {
-                        var createApplicantQuery = @"INSERT INTO ApplicantLanguageRelations (ApplicantId,Langugage) VALUES ('" + item.ApplicantId + "','" + item.Langugage + "') ";
-                        insertSql += createApplicantQuery;
+                        var applicantLan = new ApplicantLanguageRelation
+                        {
+                            ApplicantId = item.ApplicantId,
+                            Language = item.Language
+                        };
+                        await _applicantRepo.Create(applicantLan);
                     }
-                    var createResult = await connection.ExecuteAsync(insertSql);
                     return new BulkCreateApplicantLanguageRelationCommandResponse();
                 }
                 catch (Exception ex)
                 {
                     return new BulkCreateApplicantLanguageRelationCommandResponse { ErrorMessage = ex.Message };
                 }
-            }
+            
         }
     }
 }

@@ -4,6 +4,7 @@ using CVFilter.Domain.Core.ServiceResponse;
 using CVFilter.Domain.Core.ServiceResponse.Base;
 using CVFilter.Infrastructure.Command.Response;
 using CVFilter.Infrastructure.Query.Response;
+using static CVFilter.Domain.Core.Enums.EnumHelper;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -13,15 +14,19 @@ using CVFilter.Infrastructure.Command.Request;
 using CVFilter.Infrastructure.Query.Request;
 using System.Linq;
 using Mapster;
+using CVFilter.Infrastructure.UnitOfWork;
+using CVFilter.Infrastructure.UnitOfWork.Base;
 
 namespace CVFilter.Application.Concrete
 {
     public class ApplicantService : IApplicantService
     {
         private readonly IMediator _mediatr;
-        public ApplicantService(IMediator mediatr)
+        private readonly IUnitOfWork _uof;
+        public ApplicantService(IMediator mediatr,IUnitOfWork uof)
         {
             _mediatr = mediatr;
+            _uof = uof;
         }
         public async Task<IServiceResponse<CreateApplicantCommandResponse>> CreateAsync(CreateApplicantCommandRequestDto createApplicantCommandRequestDto)
         {
@@ -35,7 +40,7 @@ namespace CVFilter.Application.Concrete
             {
                 return new ServiceResponse<CreateApplicantCommandResponse>(500, false, createApplicant.ErrorMessage);
             }
-
+            _uof.Commit();
             return new ServiceResponse<CreateApplicantCommandResponse>(201, true, new CreateApplicantCommandResponse { Id = createApplicant.Id });
         }
 
@@ -51,7 +56,7 @@ namespace CVFilter.Application.Concrete
             {
                 return new ServiceResponse<DeleteApplicantCommandResponse>(500, false, deleteApplicant.ErrorMessage);
             }
-
+            _uof.Commit();
             return new ServiceResponse<DeleteApplicantCommandResponse>(204, deleteApplicant.Success);
         }
 
@@ -62,7 +67,7 @@ namespace CVFilter.Application.Concrete
             {
                 return new ServiceResponse<GetAllApplicantQueryResponse>(200, false, new GetAllApplicantQueryResponse());
             }
-
+            _uof.Commit();
             return new ServiceResponse<GetAllApplicantQueryResponse>(200, true, getAllApplicant);
         }
 
@@ -78,9 +83,8 @@ namespace CVFilter.Application.Concrete
             {
                 return new ServiceResponse<GetApplicantQueryResponse>(404, false, "Get Applicant Error");
             }
-
+            _uof.Commit();
             return new ServiceResponse<GetApplicantQueryResponse>(200, true, getApplicant);
-
         }
 
         public async Task<IServiceResponse<UpdateApplicantCommandResponse>> UpdateAsync(UpdateApplicantCommandRequestDto updateApplicantCommandResponseDto)
@@ -95,7 +99,7 @@ namespace CVFilter.Application.Concrete
             {
                 return new ServiceResponse<UpdateApplicantCommandResponse>(500, false, updateApplicant.ErrorMessage);
             }
-
+            _uof.Commit();
             return new ServiceResponse<UpdateApplicantCommandResponse>(200, true, updateApplicant);
         }
     }

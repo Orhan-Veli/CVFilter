@@ -3,8 +3,8 @@ services:
   cvfilter.presentation.webapi:
    restart: always
    build:
-    context: .
-    dockerfile: webapi.Dockerfile
+    context: /backend
+    dockerfile: CVFilter.Presentation.WebAPI/Dockerfile
    ports: 
     - "7000:7000"  
    depends_on: 
@@ -14,7 +14,7 @@ services:
    container_name: vue
    build: 
     context: .
-    dockerfile: Dockerfile
+    dockerfile: CVFilter.Presentation.Web/cvfilter.web/dockerfile
    environment:
     - CHOKIDAR_USEPOLLING=true
    ports:

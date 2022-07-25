@@ -12,19 +12,23 @@ using System.Threading.Tasks;
 using CVFilter.Infrastructure.Command.Request;
 using Mapster;
 using System.IO;
-using static CVFilter.Domain.Core.Enums.EnumHelper;
 using CVFilter.Domain.Core.Extensions;
 using System.Text.RegularExpressions;
+using CVFilter.Infrastructure.UnitOfWork;
+using CVFilter.Infrastructure.UnitOfWork.Base;
+using CVFilter.Domain.Core.Enums;
 
 namespace CVFilter.Application.Concrete
 {
     public class CVService : ICVService
     {
         private readonly IMediator _mediatr;
+        private readonly IUnitOfWork _uof;
         public string[] splittedText;
-        public CVService(IMediator mediatr)
+        public CVService(IMediator mediatr,IUnitOfWork uof)
         {
             _mediatr = mediatr;
+            _uof = uof;
             splittedText = new string[] { };
         }
 
@@ -102,6 +106,7 @@ namespace CVFilter.Application.Concrete
                         await _mediatr.Send(addLanguageRelation);
                     }
                 }
+                _uof.Commit();
                 return new ServiceResponse<string>(201, true);
             }
             catch (Exception x)
