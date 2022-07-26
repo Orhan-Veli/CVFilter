@@ -4,7 +4,7 @@ using CVFilter.Domain.Core.ServiceResponse;
 using CVFilter.Domain.Core.ServiceResponse.Base;
 using CVFilter.Infrastructure.Command.Response;
 using CVFilter.Infrastructure.Query.Response;
-using static CVFilter.Domain.Core.Enums.EnumHelper;
+using CVFilter.Domain.Core.Enums;
 using MediatR;
 using System;
 using System.Collections.Generic;

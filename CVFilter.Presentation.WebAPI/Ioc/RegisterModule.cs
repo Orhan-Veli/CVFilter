@@ -4,6 +4,11 @@ using CVFilter.Application.Concrete;
 using CVFilter.Application.Dto;
 using CVFilter.Presentation.WebAPI.Validation;
 using FluentValidation;
+using CVFilter.Infrastructure.UnitOfWork;
+using CVFilter.Infrastructure.UnitOfWork.Base;
+using CVFilter.Infrastructure.EntityRepository;
+using CVFilter.Infrastructure.EntityRepository.Base;
+using CVFilter.Domain.Entities;
 
 namespace CVFilter.Presentation.WebAPI.Ioc
 {

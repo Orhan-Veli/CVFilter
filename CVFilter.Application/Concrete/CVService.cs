@@ -91,7 +91,7 @@ namespace CVFilter.Application.Concrete
                         var createApplicantEducationRelationCommandRequest = new CreateApplicantLanguageRelationCommandRequest
                         {
                             ApplicantId = createdApplicantResult.Id,
-                            Langugage = x
+                            Language = x
                         };
                         addLanguageRelation.CreateApplicantLanguageRelations.Add(createApplicantEducationRelationCommandRequest);
                     });
