@@ -63,7 +63,6 @@
 
 </template>
 <script>
-import * as Vue from 'vue'
 import router from 'vue-router'
 export default {
   name: "Home",
