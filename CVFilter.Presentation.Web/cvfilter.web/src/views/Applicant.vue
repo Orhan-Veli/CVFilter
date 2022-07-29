@@ -36,24 +36,6 @@
                 <td>kilgore</td>
                 <td>kilgore</td>
 							</tr>
-              <tr>
-								<td>1</td>
-								<td>Kilgore</td>
-								<td>Trout</td>
-								<td>kilgore</td>
-                <td>kilgore</td>
-                <td>kilgore</td>
-                <td>kilgore</td>
-							</tr>
-              <tr>
-								<td>1</td>
-								<td>Kilgore</td>
-								<td>Trout</td>
-								<td>kilgore</td>
-                <td>kilgore</td>
-                <td>kilgore</td>
-                <td>kilgore</td>
-							</tr>
 						</tbody>
 					</table>
 				</div>
@@ -64,6 +46,7 @@
 <script>
 export default {
     name: "Create",
+    props: [""],
     data(){
         return{
 
@@ -72,7 +55,6 @@ export default {
     components: {
         
     },
-    props: [""],
     methods: {
         
     }
