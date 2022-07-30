@@ -11,6 +11,8 @@ namespace CVFilter.Infrastructure.Command.Request
         public UpdateApplicantCommandRequest()
         {
             UpdatedDate = DateTime.Now;
+            IsDeleted = false;
+            IsActive = true;
         }
         public int Id { get; set; }
         public string Matches { get; set; }

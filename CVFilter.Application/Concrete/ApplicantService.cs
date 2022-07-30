@@ -67,7 +67,6 @@ namespace CVFilter.Application.Concrete
             {
                 return new ServiceResponse<GetAllApplicantQueryResponse>(200, false, new GetAllApplicantQueryResponse());
             }
-            _uof.Commit();
             return new ServiceResponse<GetAllApplicantQueryResponse>(200, true, getAllApplicant);
         }
 
@@ -83,7 +82,6 @@ namespace CVFilter.Application.Concrete
             {
                 return new ServiceResponse<GetApplicantQueryResponse>(404, false, "Get Applicant Error");
             }
-            _uof.Commit();
             return new ServiceResponse<GetApplicantQueryResponse>(200, true, getApplicant);
         }
 

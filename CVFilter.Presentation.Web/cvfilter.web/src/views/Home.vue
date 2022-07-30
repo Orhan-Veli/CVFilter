@@ -63,11 +63,16 @@
 
 </template>
 <script>
-import router from 'vue-router'
+import router from '../router'
 export default {
   name: "Home",
   components: {},
   props: [""],
+  data(){
+	return {
+		applicants: []
+	}
+  },
   methods: {
     async SendData(){
       const request = {
@@ -91,10 +96,30 @@ export default {
 		}
 	})
     .catch((err) => alert(err))
+    },
+	async CheckDatabaseHasData(){
+		 const request = {
+        User: "",
+      }
+      const requestOptions = {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json",},
+	 	body: JSON.stringify(request)
+      };
+    await fetch('http://localhost:7000/applicant/getall',requestOptions)
+    .then(response => response.json()).then((res) => {
+		this.applicants = res.data.getApplicantQueryResponses;
+		if(this.applicants.length > 0){
+			router.push({path: '/Applicant'});
+		}
+	})
+    .catch((err) => alert(err))
     }
   },
   created()
   {
+	this.CheckDatabaseHasData();
     // var scripts = [
     //   "../assets/MainPage/vendor/jquery/jquery-3.2.1.min.js",
     //   "../assets/MainPage/vendor/bootstrap/js/popper.js",
