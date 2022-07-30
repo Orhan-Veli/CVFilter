@@ -21,7 +21,7 @@ namespace CVFilter.Presentation.WebAPI.Controllers
             return StatusCode(result.HttpResponse, new {result.Status, result.Data});
         }
 
-        [HttpGet("getbyid")]
+        [HttpGet("getbyid?Id={Id}")]
         public async Task<IActionResult> GetAsync([FromQuery]GetApplicantQueryRequestDto getApplicantQueryRequestDto)
         {
             var result = await _applicantService.GetAsync(getApplicantQueryRequestDto);
@@ -43,7 +43,7 @@ namespace CVFilter.Presentation.WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync(UpdateApplicantCommandRequestDto updateApplicantCommandRequestDto)
+        public async Task<IActionResult> UpdateAsync([FromBody]UpdateApplicantCommandRequestDto updateApplicantCommandRequestDto)
         {
             if (!ModelState.IsValid)
             {
@@ -55,8 +55,8 @@ namespace CVFilter.Presentation.WebAPI.Controllers
             return StatusCode(result.HttpResponse, new {result.Status, result.Data});
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(DeleteApplicantCommandRequestDto deleteApplicantCommandRequestDto)
+        [HttpDelete("delete?Id={Id}")]
+        public async Task<IActionResult> DeleteAsync([FromQuery]DeleteApplicantCommandRequestDto deleteApplicantCommandRequestDto)
         {
             if (!ModelState.IsValid) 
             {

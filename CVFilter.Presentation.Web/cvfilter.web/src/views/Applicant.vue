@@ -4,7 +4,7 @@
 			<div class="col-md-6">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h3 class="panel-title">Applicant</h3>
+						<h3 class="panel-title">APPLICANT</h3>
 						<div class="pull-right">
 							<span class="clickable filter" data-toggle="tooltip" title="Toggle table filter" data-container="body">
 								<i class="glyphicon glyphicon-filter"></i>
@@ -14,7 +14,7 @@
 					<div class="panel-body">
 						<input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table" placeholder="Filter Developers" />
 					</div>
-					<table class="table table-hover" id="dev-table">
+					<table class="table" id="dev-table">
 						<thead>
 							<tr>
 								<th>Id</th>
@@ -24,6 +24,8 @@
                 <th>Matches</th>
                 <th>Language</th>
                 <th>School</th>
+				<th>Edit</th>
+				<th>Delete</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -35,6 +37,8 @@
                 <td>kilgore</td>
                 <td>kilgore</td>
                 <td>kilgore</td>
+				<td><button OnClick="EditUser">Edit</button></td>
+                <td><button OnClick="DeleteUser">Delete</button></td>
 							</tr>
 						</tbody>
 					</table>
@@ -45,7 +49,7 @@
 </template>
 <script>
 export default {
-    name: "Create",
+    name: "Applicant",
     props: [""],
     data(){
         return{
@@ -56,7 +60,23 @@ export default {
         
     },
     methods: {
-        
+        EditUser(id){
+		},
+		async DeleteUser(id){
+      const requestOptions = {
+        method: "DELETE",
+        mode: "cors",
+        headers: { "Content-Type": "application/json",}
+      };
+    await fetch('http://localhost:7000/cv/getbyid?Id='+id,requestOptions)
+    .then(response => {
+		if(response.status != 200)
+		{
+			alert("There is an error! Check logs!");
+		}
+	})
+    .catch((err) => alert(err))
+    }
     }
 }
 </script>
@@ -81,12 +101,14 @@ export default {
 		}
     .panel-title{
       align-items: center;
+	  margin-bottom: 5%;
+	  margin-left: 80%;
     }
     .container{
-      margin-left: 30%;
+      margin-left: 25%;
       margin-top: 5%;
       border: 10px solid #222;
-      width: 40%;
+      width: 50%;
       border-radius: 50px;
       background: white;
     }

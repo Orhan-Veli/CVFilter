@@ -59,13 +59,13 @@ export default {
     },
     props: [""],
     methods: {
-    async SendData(){
+    async GetApplicant(id){
       const requestOptions = {
         method: "GET",
         mode: "cors",
         headers: { "Content-Type": "application/json",}
       };
-    await fetch('http://localhost:7000/cv/getall',requestOptions)
+    await fetch('http://localhost:7000/cv/getbyid?Id='+id,requestOptions)
     .then(response => {
 		if(response.status != 200)
 		{
