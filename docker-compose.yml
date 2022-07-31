@@ -1,10 +1,10 @@
-version: "3.5"
+version: "3.8"
 services:
   cvfilter.presentation.webapi:
    restart: always
    build:
-    context: /backend
-    dockerfile: CVFilter.Presentation.WebAPI/Dockerfile
+    context: CVFilter.Presentation.WebAPI
+    dockerfile: Dockerfile
    ports: 
     - "7000:7000"  
    depends_on: 
@@ -13,8 +13,8 @@ services:
   codechat-web:
    container_name: vue
    build: 
-    context: .
-    dockerfile: CVFilter.Presentation.Web/cvfilter.web/dockerfile
+    context: CVFilter.Presentation.Web/cvfilter.web
+    dockerfile: Dockerfile
    environment:
     - CHOKIDAR_USEPOLLING=true
    ports:

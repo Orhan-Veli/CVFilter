@@ -57,10 +57,10 @@ namespace CVFilter.Presentation.WebAPI
             }
             app.UseStaticFiles();
 
-            //using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            //{
-            //    scope.ServiceProvider.GetService<CVFilterDbContext>().Database.Migrate();
-            //}
+            using (IServiceScope scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetService<CVFilterDbContext>().Database.Migrate();
+            }
 
             app.UseRouting();
 

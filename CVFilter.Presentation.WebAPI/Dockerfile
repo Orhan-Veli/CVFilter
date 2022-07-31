@@ -2,11 +2,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:3.1 as build
 WORKDIR /app
 EXPOSE 80
-COPY CVFilter.Presentation.WebAPI.csproj ./
 
-RUN dotnet restore CVFilter.Presentation.WebAPI.csproj 
+COPY ./*.csproj ./
+COPY ../CVFilter.Application/CVFilter.Application.csproj ./
+COPY ../CVFilter.Infrastructure/CVFilter.Infrastructure.csproj ./
+COPY ../CVFilter.Domain/CVFilter.Domain.csproj ./
+
+RUN dotnet restore ./*.csproj
 COPY . .
-RUN dotnet publish CVFilter.Presentation.WebAPI.csproj -c Release -o out 
+RUN dotnet publish ./*.csproj -c Release -o out 
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1 as runtime
 WORKDIR /app
