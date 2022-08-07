@@ -1,20 +1,26 @@
 # https://hub.docker.com/_/microsoft-dotnet
-FROM mcr.microsoft.com/dotnet/sdk:3.1 as build
+FROM mcr.microsoft.com/dotnet/sdk:3.1 as base
 WORKDIR /app
 EXPOSE 80
 
-COPY ./*.csproj ./
-COPY ../CVFilter.Application/CVFilter.Application.csproj ./
-COPY ../CVFilter.Infrastructure/CVFilter.Infrastructure.csproj ./
-COPY ../CVFilter.Domain/CVFilter.Domain.csproj ./
+FROM mcr.microsoft.com/dotnet/sdk:3.1 as build
+WORKDIR /src
+COPY ["CVFilter.Presentation.WebAPI/CVFilter.Presentation.WebAPI.csproj", "CVFilter.Presentation.WebAPI/"]
+COPY ["CVFilter.Application/CVFilter.Application.csproj", "CVFilter.Application/"]
+COPY ["CVFilter.Infrastructure/CVFilter.Infrastructure.csproj", "CVFilter.Infrastructure/"]
+COPY ["CVFilter.Domain/CVFilter.Domain.csproj", "CVFilter.Domain/"]
 
-RUN dotnet restore ./*.csproj
+RUN dotnet restore "CVFilter.Presentation.WebAPI/CVFilter.Presentation.WebAPI.csproj"
 COPY . .
-RUN dotnet publish ./*.csproj -c Release -o out 
+WORKDIR "/src/CVFilter.Presentation.WebAPI"
+RUN dotnet build "CVFilter.Presentation.WebAPI.csproj" -c Release -o /app/build
 
-FROM mcr.microsoft.com/dotnet/sdk:3.1 as runtime
+FROM build AS publish
+RUN dotnet publish "CVFilter.Presentation.WebAPI.csproj" -c Release -o /app/publish
+
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app/out .
+COPY --from=publish /app/publish .
 ENV ASPNETCORE_URLS http://*:7000
 ENV ASPNETCORE_ENVIRONMENT docker
 EXPOSE 7000

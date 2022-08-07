@@ -3,8 +3,8 @@ services:
   cvfilter.presentation.webapi:
    restart: always
    build:
-    context: CVFilter.Presentation.WebAPI
-    dockerfile: Dockerfile
+    context: .
+    dockerfile: CVFilter.Presentation.WebAPI/Dockerfile
    ports: 
     - "7000:7000"  
    depends_on: 
