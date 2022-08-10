@@ -34,6 +34,7 @@ namespace CVFilter.Presentation.WebAPI
            .AddDbContext<CVFilterDbContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddMemoryCache();
             services.AddCors(options =>
             {
                 options.AddPolicy(name: AllowVueRequests,

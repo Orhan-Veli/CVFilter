@@ -14,6 +14,11 @@ namespace CVFilter.Presentation.WebAPI.Controllers
             _cvService = cvService;
         }
 
+        /// <summary>
+        /// Adds Cvs to the db
+        /// </summary>
+        /// <param name="cvWorkerRequestDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] CVWorkerRequestDto cvWorkerRequestDto)
         {

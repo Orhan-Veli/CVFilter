@@ -2,6 +2,7 @@
 using CVFilter.Application.Abstract;
 using CVFilter.Application.Concrete;
 using CVFilter.Application.Dto;
+using CVFilter.Domain.Cross_Cutting_Concerns;
 using CVFilter.Presentation.WebAPI.Validation;
 using FluentValidation;
 using CVFilter.Infrastructure.UnitOfWork;
@@ -30,6 +31,7 @@ namespace CVFilter.Presentation.WebAPI.Ioc
             builder.RegisterType<GetApplicantQueryRequestDtoValidation>().As<IValidator<GetApplicantQueryRequestDto>>().InstancePerDependency();
             builder.RegisterType<UpdateApplicantCommandRequestDtoValidation>().As<IValidator<UpdateApplicantCommandRequestDto>>().InstancePerDependency();
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().SingleInstance();
+            builder.RegisterType<MemoryCache>().SingleInstance();
             //base.Load(builder);
         }
     }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using CVFilter.Infrastructure.Command.Request;
 using CVFilter.Infrastructure.Query.Request;
 using System.Linq;
+using CVFilter.Domain.Cross_Cutting_Concerns;
 using Mapster;
 using CVFilter.Infrastructure.UnitOfWork;
 using CVFilter.Infrastructure.UnitOfWork.Base;
@@ -23,10 +24,12 @@ namespace CVFilter.Application.Concrete
     {
         private readonly IMediator _mediatr;
         private readonly IUnitOfWork _uof;
-        public ApplicantService(IMediator mediatr,IUnitOfWork uof)
+        private readonly MemoryCache _cache;
+        public ApplicantService(IMediator mediatr,IUnitOfWork uof, MemoryCache cache)
         {
             _mediatr = mediatr;
             _uof = uof;
+            _cache = cache; 
         }
         public async Task<IServiceResponse<CreateApplicantCommandResponse>> CreateAsync(CreateApplicantCommandRequestDto createApplicantCommandRequestDto)
         {
@@ -41,6 +44,7 @@ namespace CVFilter.Application.Concrete
                 return new ServiceResponse<CreateApplicantCommandResponse>(500, false, createApplicant.ErrorMessage);
             }
             _uof.Commit();
+            _cache.DeleteCache();
             return new ServiceResponse<CreateApplicantCommandResponse>(201, true, new CreateApplicantCommandResponse { Id = createApplicant.Id });
         }
 
@@ -57,11 +61,18 @@ namespace CVFilter.Application.Concrete
                 return new ServiceResponse<DeleteApplicantCommandResponse>(500, false, deleteApplicant.ErrorMessage);
             }
             _uof.Commit();
+            _cache.DeleteCache();
             return new ServiceResponse<DeleteApplicantCommandResponse>(204, deleteApplicant.Success);
         }
 
         public async Task<IServiceResponse<GetAllApplicantQueryResponse>> GetAllAsync(GetAllApplicantQueryRequestDto getAllApplicantQueryRequestDto)
         {
+            var getCacheValue = _cache.GetApplicants();
+            if (getCacheValue.Any())
+            {
+                return new ServiceResponse<GetAllApplicantQueryResponse>(200, true, getCacheValue.Adapt<GetAllApplicantQueryResponse>());
+            }
+
             var getAllApplicant = await _mediatr.Send(getAllApplicantQueryRequestDto.Adapt<GetAllApplicantQueryRequest>());
             if (!getAllApplicant.GetApplicantQueryResponses.Any())
             {
@@ -98,6 +109,7 @@ namespace CVFilter.Application.Concrete
                 return new ServiceResponse<UpdateApplicantCommandResponse>(500, false, updateApplicant.ErrorMessage);
             }
             _uof.Commit();
+            _cache.DeleteCache();
             return new ServiceResponse<UpdateApplicantCommandResponse>(200, true, updateApplicant);
         }
     }

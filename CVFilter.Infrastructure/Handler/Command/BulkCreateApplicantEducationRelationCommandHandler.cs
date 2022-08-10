@@ -9,6 +9,8 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Domain.Core.Constants;
+using CVFilter.Domain.Cross_Cutting_Concerns;
 using CVFilter.Infrastructure.EntityRepository;
 using CVFilter.Infrastructure.EntityRepository.Base;
 using CVFilter.Domain.Entities;
@@ -41,7 +43,8 @@ namespace CVFilter.Infrastructure.Handler.Command
                 }
                 catch (Exception ex)
                 {
-                    return new BulkCreateApplicantEducationRelationCommandResponse { ErrorMessage = ex.Message };
+                    LogFile.Write(Errors.Error, ErrorMessages.ErrorBulkCreateApplicantEducationRelation + ex.Message);
+                return new BulkCreateApplicantEducationRelationCommandResponse { ErrorMessage = ex.Message };
                 }
             
         }

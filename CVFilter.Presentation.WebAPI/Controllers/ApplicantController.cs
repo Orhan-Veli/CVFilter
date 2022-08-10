@@ -14,6 +14,11 @@ namespace CVFilter.Presentation.WebAPI.Controllers
             _applicantService = applicantService;
         }
 
+        /// <summary>
+        /// Gets All Applicant
+        /// </summary>
+        /// <param name="getAllQueryRequestDto"></param>
+        /// <returns></returns>
         [HttpPost("getall")]
         public async Task<IActionResult> GetAllAsync(GetAllApplicantQueryRequestDto getAllQueryRequestDto)
         {
@@ -21,6 +26,11 @@ namespace CVFilter.Presentation.WebAPI.Controllers
             return StatusCode(result.HttpResponse, new {result.Status, result.Data});
         }
 
+        /// <summary>
+        /// Gets applicant by id
+        /// </summary>
+        /// <param name="getApplicantQueryRequestDto"></param>
+        /// <returns></returns>
         [HttpGet("getbyid")]
         public async Task<IActionResult> GetAsync([FromQuery]GetApplicantQueryRequestDto getApplicantQueryRequestDto)
         {
@@ -29,6 +39,11 @@ namespace CVFilter.Presentation.WebAPI.Controllers
             return StatusCode(result.HttpResponse, new { result.Status, result.Data });
         }
 
+        /// <summary>
+        /// Creates Applicant
+        /// </summary>
+        /// <param name="createApplicantCommandRequestDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody]CreateApplicantCommandRequestDto createApplicantCommandRequestDto)
         {
@@ -42,6 +57,11 @@ namespace CVFilter.Presentation.WebAPI.Controllers
             return StatusCode(result.HttpResponse, new { result.Status, result.Data });
         }
 
+        /// <summary>
+        /// Updates applicant
+        /// </summary>
+        /// <param name="updateApplicantCommandRequestDto"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody]UpdateApplicantCommandRequestDto updateApplicantCommandRequestDto)
         {
@@ -55,6 +75,11 @@ namespace CVFilter.Presentation.WebAPI.Controllers
             return StatusCode(result.HttpResponse, new {result.Status, result.Data});
         }
 
+        /// <summary>
+        /// Delete applicant
+        /// </summary>
+        /// <param name="deleteApplicantCommandRequestDto"></param>
+        /// <returns></returns>
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync([FromQuery]DeleteApplicantCommandRequestDto deleteApplicantCommandRequestDto)
         {

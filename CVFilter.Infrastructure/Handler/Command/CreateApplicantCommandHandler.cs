@@ -9,7 +9,8 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CVFilter.Domain.Core.SqlQueries;
+using CVFilter.Domain.Core.Constants;
+using CVFilter.Domain.Cross_Cutting_Concerns;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CVFilter.Infrastructure.EntityRepository;
@@ -46,6 +47,7 @@ namespace CVFilter.Infrastructure.Handler.Command
                 }
                 catch(Exception ex)
                 {
+                    LogFile.Write(Errors.Error, ErrorMessages.ErrorCreateApplicant + ex.Message);
                     return new CreateApplicantCommandResponse { Id = -1, ErrorMessage = ex.Message };
                 }
             

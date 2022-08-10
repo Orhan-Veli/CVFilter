@@ -4,8 +4,9 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CVFilter.Domain.Core.Constants;
 using CVFilter.Domain.Core.Interfaces;
-using CVFilter.Domain.Core.SqlQueries;
+using CVFilter.Domain.Cross_Cutting_Concerns;
 using CVFilter.Infrastructure.Command.Request;
 using CVFilter.Infrastructure.Command.Response;
 using Microsoft.Extensions.Configuration;
@@ -42,6 +43,7 @@ namespace CVFilter.Infrastructure.Handler.Command
                 }
                 catch (Exception ex)
                 {
+                    LogFile.Write(Errors.Error, ErrorMessages.ErrorCreateLog + ex.Message);
                     return new CreateLogCommandResponse { Id = -1, ErrorMessage = ex.Message };
                 }
             
