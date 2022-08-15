@@ -17,6 +17,7 @@ using CVFilter.Domain.Cross_Cutting_Concerns;
 using Mapster;
 using CVFilter.Infrastructure.UnitOfWork;
 using CVFilter.Infrastructure.UnitOfWork.Base;
+using CVFilter.Domain.Core.Constants;
 
 namespace CVFilter.Application.Concrete
 {
@@ -35,7 +36,7 @@ namespace CVFilter.Application.Concrete
         {
             if (createApplicantCommandRequestDto == null || string.IsNullOrEmpty(createApplicantCommandRequestDto.Path) || string.IsNullOrEmpty(createApplicantCommandRequestDto.Matches))
             {
-                return new ServiceResponse<CreateApplicantCommandResponse>(400,false,"Create Applicant model is not valid");
+                return new ServiceResponse<CreateApplicantCommandResponse>(400,false,ErrorMessages.ErrorCreateApplicant);
             }
 
             var createApplicant = await _mediatr.Send(createApplicantCommandRequestDto.Adapt<CreateApplicantCommandRequest>());
@@ -52,7 +53,7 @@ namespace CVFilter.Application.Concrete
         {
             if (deleteApplicantCommandRequestDto == null || deleteApplicantCommandRequestDto.Id == 0)
             {
-                return new ServiceResponse<DeleteApplicantCommandResponse>(400, false, "Delete Applicant model is not valid");
+                return new ServiceResponse<DeleteApplicantCommandResponse>(400, false, ErrorMessages.ErrorDeleteApplicant);
             }
 
             var deleteApplicant = await _mediatr.Send(deleteApplicantCommandRequestDto.Adapt<DeleteApplicantCommandRequest>());
@@ -68,15 +69,15 @@ namespace CVFilter.Application.Concrete
         public async Task<IServiceResponse<GetAllApplicantQueryResponse>> GetAllAsync(GetAllApplicantQueryRequestDto getAllApplicantQueryRequestDto)
         {
             var getCacheValue = _cache.GetApplicants();
-            if (getCacheValue.Any())
+            if (getCacheValue != null)
             {
                 return new ServiceResponse<GetAllApplicantQueryResponse>(200, true, getCacheValue.Adapt<GetAllApplicantQueryResponse>());
             }
 
             var getAllApplicant = await _mediatr.Send(getAllApplicantQueryRequestDto.Adapt<GetAllApplicantQueryRequest>());
-            if (!getAllApplicant.GetApplicantQueryResponses.Any())
+            if (!getAllApplicant.GetApplicantQueryResponses.Any() || !string.IsNullOrEmpty(getAllApplicant.Errors))
             {
-                return new ServiceResponse<GetAllApplicantQueryResponse>(200, false, new GetAllApplicantQueryResponse());
+                return new ServiceResponse<GetAllApplicantQueryResponse>(200, false, new GetAllApplicantQueryResponse(), getAllApplicant?.Errors);
             }
             return new ServiceResponse<GetAllApplicantQueryResponse>(200, true, getAllApplicant);
         }
@@ -85,13 +86,13 @@ namespace CVFilter.Application.Concrete
         {
             if (getApplicantQueryRequestDto == null || getApplicantQueryRequestDto.Id == 0)
             {
-                return new ServiceResponse<GetApplicantQueryResponse>(400, false, "Get Applicant model is not valid");
+                return new ServiceResponse<GetApplicantQueryResponse>(400, false, ErrorMessages.ErrorGetApplicant);
             }
 
             var getApplicant = await _mediatr.Send(getApplicantQueryRequestDto.Adapt<GetApplicantQueryRequest>());
             if(getApplicant == null)
             {
-                return new ServiceResponse<GetApplicantQueryResponse>(404, false, "Get Applicant Error");
+                return new ServiceResponse<GetApplicantQueryResponse>(404, false, ErrorMessages.ErrorGetApplicant);
             }
             return new ServiceResponse<GetApplicantQueryResponse>(200, true, getApplicant);
         }
@@ -100,7 +101,7 @@ namespace CVFilter.Application.Concrete
         {
             if (updateApplicantCommandResponseDto == null || updateApplicantCommandResponseDto.Id==0 || string.IsNullOrEmpty(updateApplicantCommandResponseDto.Matches) || string.IsNullOrEmpty(updateApplicantCommandResponseDto.Path))
             {
-                return new ServiceResponse<UpdateApplicantCommandResponse>(400, false, "Update model is not valid");
+                return new ServiceResponse<UpdateApplicantCommandResponse>(400, false, ErrorMessages.ErrorUpdateApplicant);
             }
 
             var updateApplicant = await _mediatr.Send(updateApplicantCommandResponseDto.Adapt<UpdateApplicantCommandRequest>());

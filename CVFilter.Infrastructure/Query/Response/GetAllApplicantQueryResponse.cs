@@ -10,6 +10,7 @@ namespace CVFilter.Infrastructure.Query.Response
         {
             GetApplicantQueryResponses = new List<GetApplicantQueryResponse>();
         }
+        public string Errors { get; set; }
         public List<GetApplicantQueryResponse> GetApplicantQueryResponses { get; set; }
     }
 }

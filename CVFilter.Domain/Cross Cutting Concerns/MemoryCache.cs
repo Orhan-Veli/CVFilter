@@ -24,7 +24,7 @@ namespace CVFilter.Domain.Cross_Cutting_Concerns
 
         public List<Applicant> GetApplicants()
         {
-            return JsonSerializer.Deserialize<List<Applicant>>(CacheKeys.applicantMemcache);
+            return _memoryCache.Get<List<Applicant>>(CacheKeys.applicantMemcache);
         }
 
         public void DeleteCache()

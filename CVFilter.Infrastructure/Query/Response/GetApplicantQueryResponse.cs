@@ -10,5 +10,7 @@ namespace CVFilter.Infrastructure.Query.Response
         public string Matches { get; set; }
         public string Path { get; set; }
         public string User { get; set; }
+
+        public string Error { get; set; }
     }
 }

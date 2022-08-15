@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using CVFilter.Infrastructure.EntityRepository;
 using CVFilter.Infrastructure.EntityRepository.Base;
 using CVFilter.Domain.Entities;
+using CVFilter.Domain.Cross_Cutting_Concerns;
+using CVFilter.Domain.Core.Constants;
 
 namespace CVFilter.Infrastructure.Handler.Query
 {
@@ -29,20 +31,28 @@ namespace CVFilter.Infrastructure.Handler.Query
         }
         public async Task<GetAllApplicantQueryResponse> Handle(GetAllApplicantQueryRequest request, CancellationToken cancellationToken)
         {
-            var getAllApplicant = await _applicantRepo.GetAll(x=> x.IsActive && !x.IsDeleted);
-            var getAllApplicantDto = new GetAllApplicantQueryResponse();
-            foreach (var item in getAllApplicant)
+            try
             {
-                var applicant = new GetApplicantQueryResponse
+                var getAllApplicant = await _applicantRepo.GetAll(x => x.IsActive && !x.IsDeleted);
+                var getAllApplicantDto = new GetAllApplicantQueryResponse();
+                foreach (var item in getAllApplicant)
                 {
-                    Id = item.Id,
-                    Matches = item.Matches,
-                    Path = item.Path,
-                    User = item.Name
-                };
-                getAllApplicantDto.GetApplicantQueryResponses.Add(applicant);
+                    var applicant = new GetApplicantQueryResponse
+                    {
+                        Id = item.Id,
+                        Matches = item.Matches,
+                        Path = item.Path,
+                        User = item.Name
+                    };
+                    getAllApplicantDto.GetApplicantQueryResponses.Add(applicant);
+                }
+                return getAllApplicantDto;
             }
-            return getAllApplicantDto;
+            catch (Exception ex)
+            {
+                LogFile.Write(Errors.Error, ErrorMessages.ErrorGetAllApplicant + ex.Message);
+                return new GetAllApplicantQueryResponse { Errors = ex.Message, GetApplicantQueryResponses = new List<GetApplicantQueryResponse>() };
+            }            
         }
     }
 }

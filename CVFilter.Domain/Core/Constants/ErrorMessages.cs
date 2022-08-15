@@ -17,6 +17,7 @@ namespace CVFilter.Domain.Core.Constants
         public const string ErrorDeleteApplicantEducationRelation = "Delete Applicant Education Relation Error!";
         public const string ErrorDeleteApplicantLanguageRelation = "Delete Applicant Language Relation Error!";
         public const string ErrorUpdateApplicant = "Update Applicant Error!";
-
+        public const string ErrorGetApplicant = "Get Applicant Error!";
+        public const string ErrorGetAllApplicant = "GetAll Applicant Error!";
     }
 }

@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using CVFilter.Infrastructure.EntityRepository;
 using CVFilter.Infrastructure.EntityRepository.Base;
 using CVFilter.Domain.Entities;
+using CVFilter.Domain.Cross_Cutting_Concerns;
+using CVFilter.Domain.Core.Constants;
 
 namespace CVFilter.Infrastructure.Handler.Query
 {
@@ -29,8 +31,16 @@ namespace CVFilter.Infrastructure.Handler.Query
 
         public async Task<GetApplicantQueryResponse> Handle(GetApplicantQueryRequest request, CancellationToken cancellationToken)
         {
-            var result = await _applicantRepo.Get(x => x.Id == request.Id && !x.IsDeleted && x.IsActive);
-            return new GetApplicantQueryResponse { Id= result.Id, Matches=result.Matches, Path=result.Path, User= result.Name};
+            try
+            {
+                var result = await _applicantRepo.Get(x => x.Id == request.Id && !x.IsDeleted && x.IsActive);
+                return new GetApplicantQueryResponse { Id = result.Id, Matches = result.Matches, Path = result.Path, User = result.Name };
+            }
+            catch (Exception ex)
+            {
+                LogFile.Write(Errors.Error, ErrorMessages.ErrorGetApplicant + ex.Message);
+                return new GetApplicantQueryResponse { Error = ex.Message };
+            }
         }
     }
 }
