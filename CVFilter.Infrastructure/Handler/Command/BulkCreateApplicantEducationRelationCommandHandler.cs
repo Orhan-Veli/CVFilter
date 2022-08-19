@@ -37,7 +37,7 @@ namespace CVFilter.Infrastructure.Handler.Command
                             ApplicantId = item.ApplicantId, 
                             SchoolName = item.SchoolName
                         };
-                        await _applicantRepo.Create(applicantEd);
+                        await _applicantRepo.Create(applicantEd).ConfigureAwait(false);
                     }
                     return new BulkCreateApplicantEducationRelationCommandResponse();
                 }

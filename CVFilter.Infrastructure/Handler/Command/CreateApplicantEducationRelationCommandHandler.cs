@@ -36,7 +36,7 @@ namespace CVFilter.Infrastructure.Handler.Command
                         ApplicantId = request.ApplicantId,
                         SchoolName= request.SchoolName
                     };
-                    await _applicantRepo.Create(createResult);
+                    await _applicantRepo.Create(createResult).ConfigureAwait(false);
                     return new CreateApplicantEducationRelationCommandResponse();
                 }
                 catch (Exception ex)

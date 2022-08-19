@@ -16,6 +16,7 @@ using CVFilter.Infrastructure.EntityRepository.Base;
 using CVFilter.Domain.Entities;
 using CVFilter.Domain.Cross_Cutting_Concerns;
 using CVFilter.Domain.Core.Constants;
+using System.Linq.Expressions;
 
 namespace CVFilter.Infrastructure.Handler.Query
 {
@@ -33,19 +34,24 @@ namespace CVFilter.Infrastructure.Handler.Query
         {
             try
             {
-                var getAllApplicant = await _applicantRepo.GetAll(x => x.IsActive && !x.IsDeleted);
-                var getAllApplicantDto = new GetAllApplicantQueryResponse();
-                foreach (var item in getAllApplicant)
+                var expressions = new List<Expression<Func<Applicant, object>>>();
+                expressions.Add(x => x.ApplicantLanguagesRelations);
+                expressions.Add(x => x.ApplicantEducationRelations);
+                
+                var getAllApplicant = await _applicantRepo.GetAllQueryable(x => x.IsActive && !x.IsDeleted, expressions).ConfigureAwait(false);
+                var getAllApplicantDto = new GetAllApplicantQueryResponse
                 {
-                    var applicant = new GetApplicantQueryResponse
+                    Errors = null,
+                    GetApplicantQueryResponses = getAllApplicant.Select(x => new GetApplicantQueryResponse
                     {
-                        Id = item.Id,
-                        Matches = item.Matches,
-                        Path = item.Path,
-                        User = item.Name
-                    };
-                    getAllApplicantDto.GetApplicantQueryResponses.Add(applicant);
-                }
+                        Id = x.Id,
+                        Matches = x.Matches,
+                        Path = x.Path,
+                        User = x.Name,
+                        ApplicantLanguageRelations = x.ApplicantLanguagesRelations.Select(x => new ApplicantLanguageRelation { ApplicantId = x.ApplicantId, Langugage = x.Langugage, Id = x.Id }).ToList(),
+                        ApplicantEducationRelations = x.ApplicantEducationRelations.Select(x => new ApplicantEducationRelation { ApplicantId = x.ApplicantId, SchoolName = x.SchoolName, Id = x.Id }).ToList()
+                    }).ToList()
+                };
                 return getAllApplicantDto;
             }
             catch (Exception ex)

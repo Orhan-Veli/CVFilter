@@ -13,7 +13,8 @@ namespace CVFilter.Infrastructure.EntityRepository.Base
         Task Create(T model);
         Task Delete(T model);
         Task Update(T model);
-        Task<T> Get(Expression<Func<T,bool>> filter=null);
+        Task<T> Get(Expression<Func<T,bool>> filter=null, List<Expression<Func<T, object>>> includeFilters = null);
         Task<List<T>> GetAll(Expression<Func<T,bool>> filter=null);
+        Task<List<T>> GetAllQueryable(Expression<Func<T, bool>> filter = null, List<Expression<Func<T, object>>> includeFilter = null);
     }
 }

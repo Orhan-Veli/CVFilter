@@ -42,7 +42,7 @@ namespace CVFilter.Infrastructure.Handler.Command
                             PhoneNumber = item.PhoneNumber,
                             TotalExperience = item.TotalExperience 
                         };
-                        await _applicantRepo.Create(applicant);
+                        await _applicantRepo.Create(applicant).ConfigureAwait(false);
                     }
                     return new BulkCreateApplicantCommandResponse();
                 }

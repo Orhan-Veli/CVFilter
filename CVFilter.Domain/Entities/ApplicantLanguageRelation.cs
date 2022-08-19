@@ -14,7 +14,7 @@ namespace CVFilter.Domain.Entities
         [Required(ErrorMessage = "ApplicantId is Required")]
         public int ApplicantId { get; set; }
         [Required(ErrorMessage = "Langugage is Required")]
-        public string Language { get; set; }
+        public string Langugage { get; set; }
         public virtual Applicant Applicant { get; set; }
     }
 }

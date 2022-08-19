@@ -43,7 +43,7 @@ namespace CVFilter.Infrastructure.Handler.Command
                         UpdatedDate = request.UpdatedDate,
                         Id = request.Id
                     };
-                    await _applicantRepo.Update(updateResult);
+                    await _applicantRepo.Update(updateResult).ConfigureAwait(false);
                     return new UpdateApplicantCommandResponse { Id = updateResult.Id };
                 }
                 catch (Exception ex)

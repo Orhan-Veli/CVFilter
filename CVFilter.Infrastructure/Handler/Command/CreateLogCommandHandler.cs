@@ -38,7 +38,7 @@ namespace CVFilter.Infrastructure.Handler.Command
                         CreatedDate = request.CreatedDate,
                         UpdatedDate = request.UpdatedDate,
                     };
-                    await _logRepo.Create(createResult);
+                    await _logRepo.Create(createResult).ConfigureAwait(false);
                     return new CreateLogCommandResponse();
                 }
                 catch (Exception ex)

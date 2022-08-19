@@ -36,9 +36,25 @@ namespace CVFilter.Infrastructure.EntityRepository
             updateEntity.State = EntityState.Modified;
         }
 
-        public async Task<T> Get(Expression<Func<T,bool>> filter=null)
+        public async Task<T> Get(Expression<Func<T,bool>> filter=null, List<Expression<Func<T, object>>> includeFilters = null)
         {
-            return _cVFilterDbContext.Set<T>().AsNoTracking().FirstOrDefault(filter);
+            if (includeFilters == null || includeFilters.Count == 0)
+            {
+                return filter == null
+                    ? await _cVFilterDbContext.Set<T>().AsNoTracking().SingleOrDefaultAsync()
+                    : await _cVFilterDbContext.Set<T>().AsNoTracking().SingleOrDefaultAsync(filter);
+            }
+            else
+            {
+                var query = _cVFilterDbContext.Set<T>().AsQueryable();
+                foreach (var item in includeFilters)
+                {
+                    query = query.Include(item);
+                }
+                return filter == null
+                    ? await query.AsNoTracking().SingleOrDefaultAsync()
+                    : await query.AsNoTracking().SingleOrDefaultAsync(filter);
+            }
         }
 
         public async Task<List<T>> GetAll(Expression<Func<T,bool>> filter=null)
@@ -46,6 +62,27 @@ namespace CVFilter.Infrastructure.EntityRepository
             return filter == null 
             ? _cVFilterDbContext.Set<T>().AsNoTracking().ToList()
             : _cVFilterDbContext.Set<T>().AsNoTracking().Where(filter).ToList();
+        }
+
+        public async Task<List<T>> GetAllQueryable(Expression<Func<T, bool>> filter = null, List<Expression<Func<T, object>>> includeFilters = null)
+        {
+            if (includeFilters == null || includeFilters.Count == 0)
+            {
+                return filter == null
+                    ? await _cVFilterDbContext.Set<T>().AsNoTracking().ToListAsync()
+                    : await _cVFilterDbContext.Set<T>().AsNoTracking().Where(filter).ToListAsync();
+            }
+            else
+            {
+                var query = _cVFilterDbContext.Set<T>().AsQueryable();
+                foreach (var item in includeFilters)
+                {
+                    query = query.Include(item);
+                }
+                return filter == null
+                    ? await query.AsNoTracking().ToListAsync()
+                    : await query.AsNoTracking().Where(filter).ToListAsync();
+            }
         }
     }
 }

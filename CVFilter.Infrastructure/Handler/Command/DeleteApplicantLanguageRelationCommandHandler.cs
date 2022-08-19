@@ -30,7 +30,7 @@ namespace CVFilter.Infrastructure.Handler.Command
         {
                 try
                 {
-                    var app = await _applicantRepo.Get(x=> x.Id == request.Id);
+                    var app = await _applicantRepo.Get(x=> x.Id == request.Id).ConfigureAwait(false);
                     await _applicantRepo.Delete(app);
                     return new DeleteApplicantLanguageRelationCommandResponse { Success = true };
                 }

@@ -37,9 +37,9 @@ namespace CVFilter.Infrastructure.Handler.Command
                         var applicantLan = new ApplicantLanguageRelation
                         {
                             ApplicantId = item.ApplicantId,
-                            Language = item.Language
+                            Langugage = item.Language
                         };
-                        await _applicantRepo.Create(applicantLan);
+                        await _applicantRepo.Create(applicantLan).ConfigureAwait(false);
                     }
                     return new BulkCreateApplicantLanguageRelationCommandResponse();
                 }

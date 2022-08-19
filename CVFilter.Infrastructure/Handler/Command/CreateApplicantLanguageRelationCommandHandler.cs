@@ -33,9 +33,9 @@ namespace CVFilter.Infrastructure.Handler.Command
                     var createResult = new ApplicantLanguageRelation
                     {
                         ApplicantId =request.ApplicantId,
-                        Language = request.Language,
+                        Langugage = request.Language,
                     };
-                    await _applicantRepo.Create(createResult);
+                    await _applicantRepo.Create(createResult).ConfigureAwait(false);
                     return new CreateApplicantLanguageRelationCommandResponse();
                 }
                 catch (Exception ex)

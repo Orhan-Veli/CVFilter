@@ -16,6 +16,7 @@ using CVFilter.Infrastructure.EntityRepository.Base;
 using CVFilter.Domain.Entities;
 using CVFilter.Domain.Cross_Cutting_Concerns;
 using CVFilter.Domain.Core.Constants;
+using System.Linq.Expressions;
 
 namespace CVFilter.Infrastructure.Handler.Query
 {
@@ -33,8 +34,11 @@ namespace CVFilter.Infrastructure.Handler.Query
         {
             try
             {
-                var result = await _applicantRepo.Get(x => x.Id == request.Id && !x.IsDeleted && x.IsActive);
-                return new GetApplicantQueryResponse { Id = result.Id, Matches = result.Matches, Path = result.Path, User = result.Name };
+                var includeFilter = new List<Expression<Func<Applicant, object>>>();
+                includeFilter.Add(x => x.ApplicantLanguagesRelations);
+                includeFilter.Add(x => x.ApplicantEducationRelations);
+                var result = await _applicantRepo.Get(x => x.Id == request.Id && !x.IsDeleted && x.IsActive, includeFilter);
+                return new GetApplicantQueryResponse { Id = result.Id, Matches = result.Matches, Path = result.Path, User = result.Name, ApplicantEducationRelations = result.ApplicantEducationRelations.Select(x => new ApplicantEducationRelation { ApplicantId = x.ApplicantId, SchoolName = x.SchoolName, Id = x.Id }).ToList(), ApplicantLanguageRelations = result.ApplicantLanguagesRelations.ToList().Select(x => new ApplicantLanguageRelation { ApplicantId = x.ApplicantId, Langugage = x.Langugage, Id = x.Id }).ToList() };
             }
             catch (Exception ex)
             {
