@@ -40,7 +40,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="applicant in applicants" key="applicant.id">
+                  <tr v-for="applicant in applicants" :key="applicant.id">
                     <td>{{ applicant.id }}</td>
                     <td>{{ applicant.user }}</td>
                     <td>{{ applicant.matches }}</td>
